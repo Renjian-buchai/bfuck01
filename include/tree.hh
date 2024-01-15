@@ -13,11 +13,11 @@ using expr = std::variant<scope, unary>;
 
 struct scope {
   std::vector<expr> inScope{};
-  std::vector<expr>* _prev = nullptr;
+  scope* _prev = nullptr;
 
-  scope(std::vector<expr>* prev);
+  scope(scope* prev);
   scope(const scope& scope);
-  scope& operator=(const scope& scope);
+  scope& operator=(const scope& _scope);
 };
 
 struct unary {

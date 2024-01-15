@@ -2,10 +2,10 @@
 
 unary::unary(token token) : _token(token) {}
 
-scope::scope(std::vector<expr>* prev) : _prev(prev) {}
-scope::scope(const scope& scope) { this->operator=(scope); }
+scope::scope(scope* prev) : _prev(prev) {}
+scope::scope(const scope& scope) { (void)scope; }
 
-scope& scope::operator=(const scope& scope) {
-  _prev = scope._prev;
-  inScope = std::move(scope.inScope);
+scope& scope::operator=(const scope& _scope) {
+  (void)_scope;
+  return *this;
 }

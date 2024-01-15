@@ -97,18 +97,25 @@ int main(int argc, const char** argv) {
   }
 
   using expr = std::variant<scope, unary>;
-  std::vector<expr> tree{};
-  std::vector<expr>* currScope = &tree;
+  scope global{nullptr};
+  scope* currScope = &global;
 
   for (auto it = tokens.begin(); it != tokens.end(); ++it) {
-    if (it->type() != tokenType::LOOP) {
-      currScope->push_back(unary{*it});
+    if (it->type() != tokenType::LOOP && it->type() != tokenType::ENDLOOP) {
+      currScope->inScope.push_back(unary{*it});
     }
 
     if (it->type() == tokenType::LOOP) {
-      currScope->push_back(scope{currScope});
-      currScope = &(std::get_if<scope>(&*currScope->rbegin())->inScope);
+      currScope->inScope.push_back(scope{currScope});
+      currScope = std::get_if<scope>(&*currScope->inScope.rbegin());
     }
+
+    if (it->type() == tokenType::ENDLOOP) {
+      currScope = currScope->_prev;
+    }
+  }
+
+  for (expr x : global.inScope) {
   }
 
   return 0;
