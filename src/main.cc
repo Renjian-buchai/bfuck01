@@ -1,37 +1,13 @@
 #include <cstdint>
 #include <fstream>
 #include <iostream>
-#include <stack>
 #include <string>
 #include <variant>
 #include <vector>
 
-enum class tokenType : uint8_t {
-  INC,
-  DEC,
-  LEFT,
-  RIGHT,
-  OUT,
-  IN,
-  LOOP,
-  ENDLOOP
-};
-
-class token {
-  const size_t _line;
-  const tokenType _type;
-
- public:
-  token(const size_t line, const tokenType type) : _line(line), _type(type) {}
-
-  size_t line() const { return _line; }
-  tokenType type() const { return _type; }
-
-  std::string toStr() {
-    return "Line: " + std::to_string(_line) +
-           ", Type: " + std::to_string(static_cast<uint8_t>(_type));
-  }
-};
+#include "../include/enum.hh"
+#include "../include/token.hh"
+#include "../include/tree.hh"
 
 int main(int argc, const char** argv) {
   if (argc != 2) {
@@ -118,6 +94,21 @@ int main(int argc, const char** argv) {
 
   for (auto token : tokens) {
     std::cout << "{" << token.toStr() << "}\n";
+  }
+
+  using expr = std::variant<scope, unary>;
+  std::vector<expr> tree{};
+  std::vector<expr>* currScope = &tree;
+
+  for (auto it = tokens.begin(); it != tokens.end(); ++it) {
+    if (it->type() != tokenType::LOOP) {
+      currScope->push_back(unary{*it});
+    }
+
+    if (it->type() == tokenType::LOOP) {
+      currScope->push_back(scope{currScope});
+      currScope = &(std::get_if<scope>(&*currScope->rbegin())->inScope);
+    }
   }
 
   return 0;
