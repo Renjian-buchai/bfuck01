@@ -1,5 +1,6 @@
 CC=g++ 
-CCFLAGS=-Wall -Wextra -Wold-style-cast -Werror -Weffc++
+CCFLAGS=-Wall -Wextra -Wold-style-cast -Werror 
+# -Weffc++
 INC=-Iinclude
 LIN=
 DEF=

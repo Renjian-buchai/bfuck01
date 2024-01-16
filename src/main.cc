@@ -72,12 +72,12 @@ int main(int argc, const char** argv) {
   // Scoping checks
   {
     size_t counter = 0;
-    for (size_t i = 0; i < tokens.size(); ++i) {
+    for (size_t i = 0; i < tokens.size(); (void)++i) {
       if (tokens[i].type() == tokenType::LOOP) {
-        ++counter;
+        (void)++counter;
       }
       if (tokens[i].type() == tokenType::ENDLOOP) {
-        --counter;
+        (void)--counter;
       }
     }
     if (counter != 0) {
@@ -92,31 +92,32 @@ int main(int argc, const char** argv) {
     }
   }
 
-  for (auto token : tokens) {
-    std::cout << "{" << token.toStr() << "}\n";
-  }
+  // for (auto token : tokens) {
+  //   std::cout << "{" << token.toStr() << "}\n";
+  // }
 
-  using expr = std::variant<scope, unary>;
+  // using expr = std::variant<scope, unary>;
   scope global{nullptr};
   scope* currScope = &global;
 
   for (auto it = tokens.begin(); it != tokens.end(); ++it) {
-    if (it->type() != tokenType::LOOP && it->type() != tokenType::ENDLOOP) {
-      currScope->inScope.push_back(unary{*it});
-    }
+    switch (it->type()) {
+      case tokenType::LOOP:
+        currScope->inScope.push_back(scope(currScope));
+        currScope = std::get_if<scope>(&*currScope->inScope.rbegin());
+        break;
 
-    if (it->type() == tokenType::LOOP) {
-      currScope->inScope.push_back(scope{currScope});
-      currScope = std::get_if<scope>(&*currScope->inScope.rbegin());
-    }
+      case tokenType::ENDLOOP:
+        currScope = currScope->_prev;
+        break;
 
-    if (it->type() == tokenType::ENDLOOP) {
-      currScope = currScope->_prev;
+      default:
+        currScope->inScope.push_back(unary{*it});
+        break;
     }
   }
 
-  for (expr x : global.inScope) {
-  }
+  (void)0;
 
   return 0;
 }

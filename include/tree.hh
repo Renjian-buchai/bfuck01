@@ -12,12 +12,12 @@ struct unary;
 using expr = std::variant<scope, unary>;
 
 struct scope {
-  std::vector<expr> inScope{};
-  scope* _prev = nullptr;
+  std::vector<expr> inScope;
+  scope* _prev;
 
   scope(scope* prev);
-  scope(const scope& scope);
-  scope& operator=(const scope& _scope);
+  // scope(const scope& scope);
+  // scope& operator=(const scope& _scope);
 };
 
 struct unary {

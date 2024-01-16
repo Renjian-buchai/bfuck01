@@ -2,10 +2,12 @@
 
 unary::unary(token token) : _token(token) {}
 
-scope::scope(scope* prev) : _prev(prev) {}
-scope::scope(const scope& scope) { (void)scope; }
+scope::scope(scope* prev) : inScope({}), _prev(prev) {}
+// scope::scope(const scope& scope) : inScope({}), _prev(nullptr) { (void)scope;
+// }
 
-scope& scope::operator=(const scope& _scope) {
-  (void)_scope;
-  return *this;
-}
+// scope& scope::operator=(const scope& _scope) {
+//   _prev = _scope._prev;
+//   // inScope = _scope.inScope;
+//   return *this;
+// }
