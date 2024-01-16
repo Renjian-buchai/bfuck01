@@ -46,9 +46,8 @@ int32_t recurse(scope* currScope, size_t& turindex,
           break;
 
         case tokenType::IN:
-          std::getline(std::cin, buffer);
+          std::cin >> buffer;
           turing[turindex] = buffer[0];
-          std::cin.ignore(std::numeric_limits<std::streamsize>::max());
           break;
 
         default:
