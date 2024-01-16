@@ -10,7 +10,8 @@
 #include "../include/token.hh"
 #include "../include/tree.hh"
 
-void recurse(scope* currScope, size_t& turindex, std::vector<int32_t>& turing) {
+int32_t recurse(scope* currScope, size_t& turindex,
+                std::vector<int32_t>& turing) {
   using expr = std::variant<scope, unary>;
   std::string buffer;
   for (expr expr : currScope->inScope) {
@@ -57,9 +58,13 @@ void recurse(scope* currScope, size_t& turindex, std::vector<int32_t>& turing) {
       }
       continue;
     } else {
-      continue;
+      if (turing[turindex] == 0) {
+        continue;
+      }
+      while (recurse(&std::get<scope>(expr), turindex, turing)) (void)0;
     }
   }
+  return turing[turindex];
 };
 
 int main(int argc, const char** argv) {
@@ -178,7 +183,7 @@ int main(int argc, const char** argv) {
     scope* currScope = &global;
     size_t turindex = 0;
 
-    recurse(currScope, turindex, turing);
+    (void)recurse(currScope, turindex, turing);
   }
 
   return 0;
