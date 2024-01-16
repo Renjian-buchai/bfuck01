@@ -8,7 +8,7 @@ STD=-std=c++17
 
 src=src/token.cc src/tree.cc src/main.cc  
 exe=test.exe
-prexe=aoeu.exe
+prexe=brainfck.exe
 
 all: com 
 
